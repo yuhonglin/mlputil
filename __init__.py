@@ -117,7 +117,7 @@ axes.Subplot.rankbin_boxplot = _rankbin_boxplot
  ##############################
  # hist with frequency logged #
  ##############################
-def _loghist(self, y, bins=20):
+def _loghist(self, y, bins=20, logx=False):
     """ first bin the values in y by their rank in y, then boxplot the data in each bin
     
     Arguments:
@@ -125,6 +125,9 @@ def _loghist(self, y, bins=20):
     - `bins`: 
     """
 
+    if logx == True:
+        y = np.log10(np.array(y)+1)
+    
     frequencies, boundaries = np.histogram(y, bins=bins)
 
     X = []
@@ -138,6 +141,10 @@ def _loghist(self, y, bins=20):
     yticks = range(1, int(max(frequencies))+2)
     self.set_yticks(yticks)
     self.set_yticklabels(['$10^%d$' % x for x in yticks])
-    
 
+    if logx == True:
+        xticks = range(int(min(y)), int(max(y))+2)
+        self.set_xticks(xticks)
+        self.set_xticklabels(['$10^%d$' % x for x in xticks])
+        
 axes.Subplot.loghist = _loghist
