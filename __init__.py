@@ -155,7 +155,7 @@ axes.Subplot.loghist = _loghist
  # group boxplot #
  #################
 def _gboxplot(self, groupname_data, colorList=['DarkGreen', 'DarkRed', 'tan', 'pink'],
-              legend = None, legendparam=None, groupOrder=None, linewidth = 3, boxWidth = .9, boxDist = .1,
+              legend = None, legendparam={}, groupOrder=None, linewidth = 3, boxWidth = .9, boxDist = .1,
               groupDist = 3, pivotPos = 0):
 
     if groupOrder == None:
@@ -181,10 +181,6 @@ def _gboxplot(self, groupname_data, colorList=['DarkGreen', 'DarkRed', 'tan', 'p
 
     bp = self.boxplot(Y, positions=positions, widths=widths)
 
-    print bp
-    print bp['boxes']
-    print bp['whiskers']
-    
     # set colors
     for j in range(len(groupname_data)):
         for i in range(numBoxInGroup):
