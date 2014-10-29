@@ -74,3 +74,41 @@ def _annotate_xrange(self, boundaries, ypos, text, color='r', linewidth=1, fonts
                 arrowprops=dict(width=1,color=color),horizontalalignment='center',verticalalignment='center', fontsize=fontsize, alpha=0.0)
     
 axes.Subplot.annotate_xrange = _annotate_xrange
+
+ ###############
+ # bin boxplot #
+ ###############
+def _rankbin_boxplot(self, y, bins=20, yscale='normal', reverse=True):
+    """ first bin the values in y by their rank in y, then boxplot the data in each bin
+    
+    Arguments:
+    - `y`: the data
+    - `bins`: integer, number of rankbin
+    - `reverse`:
+    """
+    if yscale not in ('normal', 'log'):
+        return
+
+    # first rank the data
+    if yscale == 'normal':
+        sortedy = sorted(y, reverse=reverse)
+    else:
+        sortedy = [np.log10(x+1) for x in sorted(y, reverse=reverse)]
+
+    numDataInEachBin = int(len(y)/bins)
+
+    Y = []
+
+    for i in range(0, bins-1):
+        Y.append(sortedy[i*numDataInEachBin:(i+1)*numDataInEachBin])
+
+    Y.append(sortedy[(bins-1)*numDataInEachBin:])
+        
+    self.boxplot(Y)
+
+    if yscale == 'log':
+        yticks = range(1, int(max(sortedy))+2)
+        self.set_yticks(yticks)
+        self.set_yticklabels(['$10^%d$' % x for x in yticks])
+    
+axes.Subplot.rankbin_boxplot = _rankbin_boxplot
