@@ -176,6 +176,7 @@ def _gboxplot(self, groupname_data, colorList=['DarkGreen', 'DarkRed', 'tan', 'p
     for groupIdx, groupName in enumerate(groupOrder):
         Y.extend( groupname_data[groupName] )
         positions.extend([pivotPos + x*(boxDist+boxWidth) + groupIdx*groupDist for x in range(numBoxInGroup)])
+        xticks.append(np.mean([pivotPos + x*(boxDist+boxWidth) + groupIdx*groupDist for x in range(numBoxInGroup)]))
         widths.extend([boxWidth]*numBoxInGroup)
 
     bp = self.boxplot(Y, positions=positions, widths=widths)
@@ -196,6 +197,13 @@ def _gboxplot(self, groupname_data, colorList=['DarkGreen', 'DarkRed', 'tan', 'p
              setp(bp['fliers'][j*numBoxInGroup*2+i*2+1], color=colorList[i%len(colorList)], linewidth=linewidth)
              setp(bp['medians'][j*numBoxInGroup+i], color=colorList[i%len(colorList)], linewidth=linewidth)
 
+
+    # add group names
+    self.set_xticks(xticks)
+    self.set_xticklabels(groupOrder)
+    
+
+             
     if legend != None:
         tmp = []
         for i in range(numBoxInGroup):
