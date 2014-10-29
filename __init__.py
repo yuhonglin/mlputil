@@ -7,6 +7,7 @@
 
 from matplotlib import axes
 import numpy as np
+from matplotlib.pyplot import setp
 
  #################
  # stackbar plot #
@@ -148,3 +149,62 @@ def _loghist(self, y, bins=20, logx=False):
         self.set_xticklabels(['$10^%d$' % x for x in xticks])
         
 axes.Subplot.loghist = _loghist
+
+
+ #################
+ # group boxplot #
+ #################
+def _gboxplot(self, groupname_data, colorList=['DarkGreen', 'DarkRed', 'tan', 'pink'],
+              legend = None, legendparam=None, groupOrder=None, linewidth = 3, boxWidth = .9, boxDist = .1,
+              groupDist = 3, pivotPos = 0):
+
+    if groupOrder == None:
+        groupOrder = sorted(groupname_data.keys())
+
+    numBoxInGroup = len(groupname_data.itervalues().next())
+
+    Y = []
+    positions = []
+    widths = []
+
+    xticks = []
+
+    self.hold(True)
+
+    pivotPos = 0
+    
+    for groupIdx, groupName in enumerate(groupOrder):
+        Y.extend( groupname_data[groupName] )
+        positions.extend([pivotPos + x*(boxDist+boxWidth) + groupIdx*groupDist for x in range(numBoxInGroup)])
+        widths.extend([boxWidth]*numBoxInGroup)
+
+    bp = self.boxplot(Y, positions=positions, widths=widths)
+
+    print bp
+    print bp['boxes']
+    print bp['whiskers']
+    
+    # set colors
+    for j in range(len(groupname_data)):
+        for i in range(numBoxInGroup):
+             setp(bp['boxes'][j*numBoxInGroup+i], color=colorList[i%len(colorList)], linewidth=linewidth)
+             setp(bp['caps'][j*numBoxInGroup*2+i*2], color=colorList[i%len(colorList)], linewidth=linewidth)
+             setp(bp['caps'][j*numBoxInGroup*2+i*2+1], color=colorList[i%len(colorList)], linewidth=linewidth)
+             setp(bp['whiskers'][j*numBoxInGroup*2+i*2], color=colorList[i%len(colorList)], linewidth=linewidth)
+             setp(bp['whiskers'][j*numBoxInGroup*2+i*2+1], color=colorList[i%len(colorList)], linewidth=linewidth)
+             setp(bp['fliers'][j*numBoxInGroup*2+i*2], color=colorList[i%len(colorList)], linewidth=linewidth)
+             setp(bp['fliers'][j*numBoxInGroup*2+i*2+1], color=colorList[i%len(colorList)], linewidth=linewidth)
+             setp(bp['medians'][j*numBoxInGroup+i], color=colorList[i%len(colorList)], linewidth=linewidth)
+
+    if legend != None:
+        tmp = []
+        for i in range(numBoxInGroup):
+            h, = self.plot([1,1], color=colorList[i%len(colorList)], linewidth=linewidth)
+            tmp.append(h)
+
+        self.legend(tmp, legend, **legendparam)
+            
+        for h in tmp:
+            h.set_visible(False)
+            
+axes.Subplot.gboxplot = _gboxplot
