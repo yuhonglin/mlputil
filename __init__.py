@@ -5,7 +5,7 @@
 # Author: Honglin Yu <yuhonglin1986@gmail.com>
 # License: BSD 3 clause
 
-from matplotlib import axes
+from matplotlib import axes, figure
 import numpy as np
 from matplotlib.pyplot import setp
 
@@ -212,3 +212,49 @@ def _gboxplot(self, groupname_data, colorList=['DarkGreen', 'DarkRed', 'tan', 'p
             h.set_visible(False)
             
 axes.Subplot.gboxplot = _gboxplot
+
+
+ #############
+ # grid hist #
+ #############
+
+def _gridhist(self, data, bins=50,  firstIndexOrder=None, secondIndexOrder=None, axisOff=True):
+    """grid hist: histogram of data that can be indexed in 2 ways
+    
+    Arguments:
+    - `data`: a dictionary of the form {(index1, index2) : [data], ...}
+    - `bins`:
+    - `firstIndexOrder` : the order of first index in plotting, if none, will use lexical order
+    - `secondIndexOrder` : the order of second index in plotting, if none, will use lexical order
+    - 'axisOff` : whether turn off the axes
+    """
+
+    if type(bins) == int:
+        tmp = bins
+        bins = {}
+        for x in data.iterkeys():
+            bins[x] = tmp
+
+    # self.subplots_adjust(left=0.1,top=0.9,bottom=0.02,right=0.98,wspace=0.1,hspace=0.1)
+            
+    # determine the order
+    if firstIndexOrder == None:
+        firstIndexOrder = sorted( set(map(lambda x: x[0], data.keys())) )
+    if secondIndexOrder == None:
+        secondIndexOrder = sorted( set(map(lambda x: x[1], data.keys())) )
+
+    for i, firstIndex in enumerate(firstIndexOrder):
+        for j, secondIndex in enumerate(secondIndexOrder):
+            ax = self.add_subplot( len(firstIndexOrder), len(secondIndexOrder), i*len(secondIndexOrder)+ j + 1 )
+            ax.hist(data[(firstIndex, secondIndex)], bins=bins[(firstIndex, secondIndex)])
+
+            if axisOff == True:
+                ax.set_xticklabels('')
+                ax.set_yticklabels('')
+
+            if j == 0:
+                ax.set_ylabel(firstIndex)
+            if i == 0:
+                ax.set_title(secondIndex)
+                
+figure.Figure.gridhist = _gridhist
