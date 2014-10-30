@@ -8,6 +8,7 @@
 from matplotlib import axes, figure
 import numpy as np
 from matplotlib.pyplot import setp
+from matplotlib.colors import LogNorm
 
  #################
  # stackbar plot #
@@ -217,7 +218,6 @@ axes.Subplot.gboxplot = _gboxplot
  #############
  # grid hist #
  #############
-
 def _gridhist(self, data, bins=50,  firstIndexOrder=None, secondIndexOrder=None, axisOff=True):
     """grid hist: histogram of data that can be indexed in 2 ways
     
@@ -258,3 +258,50 @@ def _gridhist(self, data, bins=50,  firstIndexOrder=None, secondIndexOrder=None,
                 ax.set_title(secondIndex)
                 
 figure.Figure.gridhist = _gridhist
+
+
+ ###############
+ # grid hist2d #
+ ###############
+def _gridhist2d(self, data, bins=50, norm=LogNorm(), firstIndexOrder=None, secondIndexOrder=None, axisOff=True, histparam={}):
+    """a 2d version of "gridhist"
+    
+    Arguments:
+    - `data`:
+    - `firstIndexOrder`:
+    - `secondIndexOrder`:
+    - `axisOff`:
+    """
+
+    if type(bins) == int:
+        tmp = bins
+        bins = {}
+        for x in data.iterkeys():
+            bins[x] = tmp
+
+    # determine the order
+    if firstIndexOrder == None:
+        firstIndexOrder = sorted( set(map(lambda x: x[0], data.keys())) )
+    if secondIndexOrder == None:
+        secondIndexOrder = sorted( set(map(lambda x: x[1], data.keys())) )
+
+    for i, firstIndex in enumerate(firstIndexOrder):
+        for j, secondIndex in enumerate(secondIndexOrder):
+            ax = self.add_subplot( len(firstIndexOrder), len(secondIndexOrder), i*len(secondIndexOrder)+ j + 1 )
+            ax.hist2d(data[(firstIndex, secondIndex)][0], data[(firstIndex, secondIndex)][1], bins=bins[(firstIndex, secondIndex)], **histparam)
+
+            if axisOff == True:
+                ax.set_xticklabels('')
+                ax.set_yticklabels('')
+
+            if j == 0:
+                ax.set_ylabel(firstIndex)
+            if i == 0:
+                ax.set_title(secondIndex)
+                
+figure.Figure.gridhist2d = _gridhist2d
+
+    
+
+
+
