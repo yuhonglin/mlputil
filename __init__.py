@@ -263,7 +263,7 @@ figure.Figure.gridhist = _gridhist
  ###############
  # grid hist2d #
  ###############
-def _gridhist2d(self, data, bins=50, norm=LogNorm(), firstIndexOrder=None, secondIndexOrder=None, axisOff=True, histparam={}):
+def _gridhist2d(self, data, bins=50, norm=LogNorm(), firstIndexOrder=None, secondIndexOrder=None, axisOff=True, histparam={}, fontsize=10):
     """a 2d version of "gridhist"
     
     Arguments:
@@ -288,7 +288,8 @@ def _gridhist2d(self, data, bins=50, norm=LogNorm(), firstIndexOrder=None, secon
     for i, firstIndex in enumerate(firstIndexOrder):
         for j, secondIndex in enumerate(secondIndexOrder):
             ax = self.add_subplot( len(firstIndexOrder), len(secondIndexOrder), i*len(secondIndexOrder)+ j + 1 )
-            ax.hist2d(data[(firstIndex, secondIndex)][0], data[(firstIndex, secondIndex)][1], bins=bins[(firstIndex, secondIndex)], **histparam)
+            h2 = ax.hist2d(data[(firstIndex, secondIndex)][0], data[(firstIndex, secondIndex)][1], bins=bins[(firstIndex, secondIndex)], norm=norm, **histparam)
+            
 
             if axisOff == True:
                 ax.set_xticklabels('')
@@ -298,6 +299,14 @@ def _gridhist2d(self, data, bins=50, norm=LogNorm(), firstIndexOrder=None, secon
                 ax.set_ylabel(firstIndex)
             if i == 0:
                 ax.set_title(secondIndex)
+
+            # self.colorbar(h2, ax=ax)
+            cb = self.colorbar(h2[-1], ax=ax)
+            cb.ax.tick_params(labelsize=fontsize) 
+
+            for item in ([ax.title] +
+                         ax.get_xticklabels() + ax.get_yticklabels()):
+                item.set_fontsize(fontsize)
                 
 figure.Figure.gridhist2d = _gridhist2d
 
