@@ -290,7 +290,6 @@ def _gridhist2d(self, data, bins=50, norm=LogNorm(), firstIndexOrder=None, secon
             ax = self.add_subplot( len(firstIndexOrder), len(secondIndexOrder), i*len(secondIndexOrder)+ j + 1 )
             h2 = ax.hist2d(data[(firstIndex, secondIndex)][0], data[(firstIndex, secondIndex)][1], bins=bins[(firstIndex, secondIndex)], norm=norm, **histparam)
             
-
             if axisOff == True:
                 ax.set_xticklabels('')
                 ax.set_yticklabels('')
@@ -304,13 +303,58 @@ def _gridhist2d(self, data, bins=50, norm=LogNorm(), firstIndexOrder=None, secon
             cb = self.colorbar(h2[-1], ax=ax)
             cb.ax.tick_params(labelsize=fontsize) 
 
-            for item in ([ax.title] +
-                         ax.get_xticklabels() + ax.get_yticklabels()):
+            for item in (ax.get_xticklabels() + ax.get_yticklabels()):
                 item.set_fontsize(fontsize)
                 
 figure.Figure.gridhist2d = _gridhist2d
 
+
+  #################
+  # general grid  #
+  #################
+def _grid(self, data, plotfunc, firstIndexOrder=None, secondIndexOrder=None, axisOff=True):
+    """ the general grid function
     
+    Arguments:
+    - `self`: a figure object
+    - `data`:
+    - `plotfunc`:
+    """
+
+    # determine the order
+    if firstIndexOrder == None:
+        firstIndexOrder = sorted( set(map(lambda x: x[0], data.keys())) )
+    if secondIndexOrder == None:
+        secondIndexOrder = sorted( set(map(lambda x: x[1], data.keys())) )
+
+    for i, firstIndex in enumerate(firstIndexOrder):
+        for j, secondIndex in enumerate(secondIndexOrder):
+            ax = self.add_subplot( len(firstIndexOrder), len(secondIndexOrder), i*len(secondIndexOrder)+ j + 1 )
+
+            if (firstIndex, secondIndex) in data:
+                plotfunc(ax, data[(firstIndex, secondIndex)], (firstIndex, secondIndex))
+
+figure.Figure.grid = _grid
 
 
+ ######################
+ # multiple histogram #
+ ######################
+def _multhist(self, data, indexOrder=[], colorList=['DarkGreen', 'DarkRed', 'tan', 'pink'], plotparam={}):
+    """
+    
+    Arguments:
+    - `self`:
+    - `data`:
+    - `colorList`:
+    - `normed`:
+    - `linestyle`:
+    """
+    
+    if indexOrder == []:
+        indexOrder = sorted(data.keys())
 
+    for i, idx in enumerate(indexOrder):
+        self.hist(data[i], **plotparam)
+
+axes.Subplot.multhist = _multhist
