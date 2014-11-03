@@ -335,26 +335,3 @@ def _grid(self, data, plotfunc, firstIndexOrder=None, secondIndexOrder=None, axi
                 plotfunc(ax, data[(firstIndex, secondIndex)], (firstIndex, secondIndex))
 
 figure.Figure.grid = _grid
-
-
- ######################
- # multiple histogram #
- ######################
-def _multhist(self, data, indexOrder=[], colorList=['DarkGreen', 'DarkRed', 'tan', 'pink'], plotparam={}):
-    """
-    
-    Arguments:
-    - `self`:
-    - `data`:
-    - `colorList`:
-    - `normed`:
-    - `linestyle`:
-    """
-    
-    if indexOrder == []:
-        indexOrder = sorted(data.keys())
-
-    for i, idx in enumerate(indexOrder):
-        self.hist(data[i], **plotparam)
-
-axes.Subplot.multhist = _multhist
