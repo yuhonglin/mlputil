@@ -335,3 +335,38 @@ def _grid(self, data, plotfunc, firstIndexOrder=None, secondIndexOrder=None, axi
                 plotfunc(ax, data[(firstIndex, secondIndex)], (firstIndex, secondIndex))
 
 figure.Figure.grid = _grid
+
+
+  ##################
+  # transformation #
+  ##################
+def _toArray(self, scale='rgb'):
+    """ to numpy array
+    reference: http://www.icare.univ-lille1.fr/wiki/index.php/How_to_convert_a_matplotlib_figure_to_a_numpy_array_or_a_PIL_image
+    Arguments:
+    - `self`: an figure object
+    """
+
+    scale = scale.lower()
+    
+    if scale not in ('rgb', 'grey', 'gray'):
+        raise('unknown scale, should be one of (\'rgb\', \'grey\', \'gray\')')
+
+    self.canvas.draw()
+
+    w, h = self.canvas.get_width_height()
+    buf = np.fromstring( self.canvas.tostring_argb(), dtype=np.uint8, sep='' )
+    
+    buf.shape = (h, w, 4) # the order of 'h' and 'w' in original code is wrong
+
+    buf = np.roll ( buf, 3, axis = 2 )
+    
+    if scale == 'rgb':
+        return buf
+    else:
+        return 0.299*buf[:,:,0] + 0.587*buf[:,:,1] + 0.114*buf[:,:,2] 
+        
+        
+figure.Figure.toarray = _toArray
+        
+        
