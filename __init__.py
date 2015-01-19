@@ -56,7 +56,7 @@ axes.Subplot.stack_bar = _stack_bar
   ####################
   # range annotation #
   ####################
-def _annotate_xrange(self, boundaries, ypos, text, color='r', linewidth=1, fontsize=23):
+def _annotate_xrange(self, boundaries, ypos, text, color='r', linewidth=1, fontsize=23, boundarysize=[0.0, 1.0]):
     """add range annotations
     
     Arguments:
@@ -66,8 +66,8 @@ def _annotate_xrange(self, boundaries, ypos, text, color='r', linewidth=1, fonts
     """
     maxY, minY = self.get_ylim()
 
-    self.plot([boundaries[0],boundaries[0]], [0, ypos], linewidth=linewidth, color=color)
-    self.plot([boundaries[1],boundaries[1]], [0, ypos], linewidth=linewidth, color=color)
+    self.plot([boundaries[0],boundaries[0]], [0+ypos*boundarysize[0], ypos*boundarysize[1]], linewidth=linewidth, color=color)
+    self.plot([boundaries[1],boundaries[1]], [0+ypos*boundarysize[0], ypos*boundarysize[1]], linewidth=linewidth, color=color)
     
     self.annotate(text, xy=(boundaries[0], ypos), color=color, xytext=((boundaries[0]+boundaries[1])/2.0, ypos), xycoords='data', textcoords='data', 
                 arrowprops=dict(width=1,color=color),horizontalalignment='center',verticalalignment='center', fontsize=fontsize)
