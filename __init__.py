@@ -13,7 +13,7 @@ from matplotlib.colors import LogNorm
  #################
  # stackbar plot #
  #################
-def _stack_bar(self, y, colorList=['r', 'g', 'b'], norm=False,  yweight=None):
+def _stack_bar(self, y, colorList=['r', 'g', 'b'], norm=False,  yweight=None, alpha=1.0):
     """make _stackbar plot
     
     Arguments:
@@ -40,11 +40,14 @@ def _stack_bar(self, y, colorList=['r', 'g', 'b'], norm=False,  yweight=None):
     else:
         normList = np.ones(length)
 
+    if not hasattr(alpha, '__iter__'):
+        alpha = [alpha for x in range(len(y))]
+        
 
     bottom = np.zeros(length)
     for i, yy in enumerate(y):
         tmp = np.array(yy)/normList*float(yweight[i])
-        self.bar(X, tmp, bottom=bottom, color=colorList[i%len(colorList)])
+        self.bar(X, tmp, bottom=bottom, color=colorList[i%len(colorList)], alpha=alpha[i])
         bottom = bottom + tmp
 
     if norm == True:
