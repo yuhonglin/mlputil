@@ -145,12 +145,12 @@ def _loghist(self, y, bins=20, logx=False):
 
     yticks = range(1, int(max(frequencies))+2)
     self.set_yticks(yticks)
-    self.set_yticklabels(['$10^%d$' % x for x in yticks])
+    self.set_yticklabels(['$10^{%d}$' % x for x in yticks])
 
     if logx == True:
         xticks = range(int(min(y)), int(max(y))+2)
         self.set_xticks(xticks)
-        self.set_xticklabels(['$10^%d$' % x for x in xticks])
+        self.set_xticklabels(['$10^{%d$}' % x for x in xticks])
         
 axes.Subplot.loghist = _loghist
 
