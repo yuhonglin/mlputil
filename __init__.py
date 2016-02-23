@@ -150,7 +150,7 @@ def _loghist(self, y, bins=20, logx=False):
     if logx == True:
         xticks = range(int(min(y)), int(max(y))+2)
         self.set_xticks(xticks)
-        self.set_xticklabels(['$10^{%d$}' % x for x in xticks])
+        self.set_xticklabels(['$10^{%d}$' % x for x in xticks])
         
 axes.Subplot.loghist = _loghist
 
